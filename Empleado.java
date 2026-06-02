@@ -1,25 +1,23 @@
 package jdbc_ejemplo1;
 
 public class Empleado {
-
     public int idEmpleado;
     public String nombre;
-    public int salario; 
-    public int idRol;
+    public String telefono;
+    public double salario; 
 
-   
-    public Empleado(int idEmpleado, String nombre, int salario, int idRol) {
+    public Empleado(int idEmpleado, String nombre, String telefono, double salario) {
         this.idEmpleado = idEmpleado;
         this.nombre = nombre;
+        this.telefono = telefono;
         this.salario = salario;
-        this.idRol = idRol;
     }
 
     public Empleado() {
         this.idEmpleado = 0;
         this.nombre = "";
-        this.salario = 0;
-        this.idRol = 0;
+        this.telefono = "";
+        this.salario = 0.0;
     }
 
     public double calcularSueldo() {
