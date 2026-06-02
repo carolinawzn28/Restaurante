@@ -2,144 +2,117 @@ package jdbc_ejemplo1;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*; 
+import java.awt.event.*;
 import java.sql.*;
-import java.io.FileWriter; 
-import java.io.IOException;
+import java.io.FileWriter;
 
 public class ABC_Recetas extends FormularioPadreABC {
-    public JTextField txtID, txtNombre, txtTipoPlatillo, txtPasos;
-    public JTextArea txtAreaIngredientes; 
-    public JButton btnAnadirTxt; 
+    public JTextField txtID, txtNombre, txtDescripcion, txtIDChef, txtIDTipo;
+    public JTextArea txtAreaIngredientes;
+    public JButton btnAnadirReceta;
 
     public ABC_Recetas() {
         super("ABC Recetas");
-        
-        
-        panelSuperior.setLayout(new GridLayout(5, 2, 5, 5));
-        
-        txtID = new JTextField(); 
-        txtNombre = new JTextField(); 
-        txtTipoPlatillo = new JTextField();
-        txtPasos = new JTextField(); 
-        
+        panelSuperior.setLayout(new GridLayout(6, 2, 5, 5));
+
+        txtID = new JTextField(); txtNombre = new JTextField();
+        txtDescripcion = new JTextField(); txtIDChef = new JTextField();
+        txtIDTipo = new JTextField(); 
+
         txtAreaIngredientes = new JTextArea();
-        txtAreaIngredientes.setEditable(false); 
-        JScrollPane scrollIngredientes = new JScrollPane(txtAreaIngredientes); 
+        txtAreaIngredientes.setEditable(false);
+        JScrollPane scroll = new JScrollPane(txtAreaIngredientes);
 
-    
-        btnAnadirTxt = new JButton("Añadir Pasos a TXT");
-        btnAnadirTxt.addActionListener(this); 
-
+        btnAnadirReceta = new JButton("Añadir Receta a TXT");
+        btnAnadirReceta.addActionListener(this);
 
         panelSuperior.add(new JLabel("IDReceta:")); panelSuperior.add(txtID);
-        panelSuperior.add(new JLabel("Nombre:")); panelSuperior.add(txtNombre);
-        panelSuperior.add(new JLabel("Tipo platillo:")); panelSuperior.add(txtTipoPlatillo);
-        panelSuperior.add(new JLabel("Pasos de la preparación:")); panelSuperior.add(txtPasos);
-        panelSuperior.add(btnAnadirTxt); panelSuperior.add(scrollIngredientes);
+        panelSuperior.add(new JLabel("Nombre Receta:")); panelSuperior.add(txtNombre);
+        panelSuperior.add(new JLabel("Descripción:")); panelSuperior.add(txtDescripcion);
+        panelSuperior.add(new JLabel("IDChef Responsable:")); panelSuperior.add(txtIDChef);
+        panelSuperior.add(new JLabel("IDTipoReceta:")); panelSuperior.add(txtIDTipo);
+        panelSuperior.add(btnAnadirReceta); panelSuperior.add(scroll);
 
- 
-        this.setSize(500, 450);
+        this.setSize(550, 480);
         this.validate();
         this.repaint();
     }
-    
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
-      
-        if (e.getSource() == btnAnadirTxt) {
-            if (txtID.getText().isEmpty() || txtNombre.getText().isEmpty() || txtPasos.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor llena el ID, Nombre y Pasos antes de guardar.");
-                return;
-            }
-            
-           
+        if (e.getSource() == btnAnadirReceta) {
             try {
-                String nombreArchivo = "Receta_" + txtNombre.getText().replace(" ", "_") + ".txt";
-                FileWriter escritor = new FileWriter(nombreArchivo, true); 
-                escritor.write("ID Receta: " + txtID.getText() + "\n");
-                escritor.write("Nombre: " + txtNombre.getText() + "\n");
-                escritor.write("Pasos de preparación:\n" + txtPasos.getText() + "\n");
-                escritor.write("----------------------------------------\n");
-                escritor.close();
-                
-                JOptionPane.showMessageDialog(null, "Pasos guardados en el archivo: " + nombreArchivo + "!");
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Error al generar el archivo TXT: " + ex.toString());
-            }
+                String file = "Receta_" + txtNombre.getText().replace(" ", "_") + ".txt";
+                FileWriter w = new FileWriter(file, true);
+                w.write("ID: " + txtID.getText() + " | Nombre: " + txtNombre.getText() + "\n");
+                w.write("Descripción: " + txtDescripcion.getText() + "\n");
+                w.write("----------------------------------------\n");
+                w.close();
+                JOptionPane.showMessageDialog(null, "Guardado en " + file);
+            } catch (Exception ex) { JOptionPane.showMessageDialog(null, ex.toString()); }
         } else {
-    
             super.actionPerformed(e);
         }
+    }
+
+   
+    public void verDetalleReceta(String extraInfo) {
+        String baseInfo = "--- DETALLE DE LA RECETA ---\n" +
+                          "ID: " + txtID.getText() + "\n" +
+                          "Nombre: " + txtNombre.getText() + "\n" +
+                          extraInfo;
+        JOptionPane.showMessageDialog(null, baseInfo);
     }
 
     @Override
     public void agregar() {
         try {
-            String sql = "INSERT INTO Recetas VALUES (" + txtID.getText() + ", '" + txtNombre.getText() + "', '" + txtTipoPlatillo.getText() + "')";
+            String sql = "INSERT INTO Recetas VALUES (" + txtID.getText() + ", '" + txtNombre.getText() + "', '" + txtDescripcion.getText() + "', " + txtIDChef.getText() + ", " + txtIDTipo.getText() + ")";
             con.createStatement().executeUpdate(sql);
             JOptionPane.showMessageDialog(null, "Receta Agregada");
-        } catch (Exception ex) { JOptionPane.showMessageDialog(null, "Error: " + ex.toString()); }
+        } catch (Exception ex) { JOptionPane.showMessageDialog(null, ex.toString()); }
     }
 
     @Override
     public void modificar() {
         try {
-            String sql = "UPDATE Recetas SET Nombre = '" + txtNombre.getText() + "', TipoPlatillo = '" + txtTipoPlatillo.getText() + "' WHERE IDReceta = " + txtID.getText();
+            String sql = "UPDATE Recetas SET Nombre='" + txtNombre.getText() + "', Descripcion='" + txtDescripcion.getText() + "', IDChef=" + txtIDChef.getText() + ", IDTipoReceta=" + txtIDTipo.getText() + " WHERE IDReceta=" + txtID.getText();
             con.createStatement().executeUpdate(sql);
             JOptionPane.showMessageDialog(null, "Receta Modificada");
-        } catch (Exception ex) { JOptionPane.showMessageDialog(null, "Error: " + ex.toString()); }
+        } catch (Exception ex) { JOptionPane.showMessageDialog(null, ex.toString()); }
     }
 
     @Override
     public void borrar() {
         try {
-            String sql = "DELETE FROM Recetas WHERE IDReceta = " + txtID.getText();
+            String sql = "DELETE FROM Recetas WHERE IDReceta=" + txtID.getText();
             con.createStatement().executeUpdate(sql);
             JOptionPane.showMessageDialog(null, "Receta Eliminada");
-        } catch (Exception ex) { JOptionPane.showMessageDialog(null, "Error: " + ex.toString()); }
+        } catch (Exception ex) { JOptionPane.showMessageDialog(null, ex.toString()); }
     }
 
     @Override
     public void consultar() {
         try {
-            
-            String sqlReceta = "SELECT * FROM Recetas WHERE IDReceta = " + txtID.getText();
-            ResultSet rsReceta = con.createStatement().executeQuery(sqlReceta);
-            
-            if (rsReceta.next()) {
-                txtNombre.setText(rsReceta.getString("Nombre"));
-                txtTipoPlatillo.setText(rsReceta.getString("TipoPlatillo"));
+            String sql = "SELECT * FROM Recetas WHERE IDReceta=" + txtID.getText();
+            ResultSet rs = con.createStatement().executeQuery(sql);
+            if (rs.next()) {
+                txtNombre.setText(rs.getString("Nombre"));
+                txtDescripcion.setText(rs.getString("Descripcion"));
+                txtIDChef.setText(rs.getString("IDChef"));
+                txtIDTipo.setText(rs.getString("IDTipoReceta"));
+
                 
-               
-                txtAreaIngredientes.setText(""); 
-                
-                String sqlIngredientes = "SELECT Nombre, Tipo FROM Ingredientes WHERE IDReceta = " + txtID.getText();
-                ResultSet rsIngredientes = con.createStatement().executeQuery(sqlIngredientes);
-                
-                txtAreaIngredientes.append("INGREDIENTES: ");
-                boolean tieneIngredientes = false;
-                
-                while (rsIngredientes.next()) {
-                    tieneIngredientes = true;
-                    String nombreIng = rsIngredientes.getString("Nombre");
-                    String tipoIng = rsIngredientes.getString("Tipo");
-                    
-                   
-                    int stockSimulado = (nombreIng.length() * 5) + 12; 
-                    
-                    txtAreaIngredientes.append("- " + nombreIng + " (" + tipoIng + ") | Stock: " + stockSimulado + " uds.\n");
+                txtAreaIngredientes.setText("--- INGREDIENTES Y EXISTENCIAS ---\n");
+                String sqlIng = "SELECT Nombre, Cantidad FROM Ingredientes WHERE IDReceta = " + txtID.getText();
+                ResultSet rsIng = con.createStatement().executeQuery(sqlIng);
+                while(rsIng.next()) {
+                    String n = rsIng.getString("Nombre");
+                    int cant = rsIng.getInt("Cantidad"); 
+                    double costoSimulado = cant * 3.50; 
+                    txtAreaIngredientes.append("- " + n + " | Stock: " + cant + " | Costo Unitario: $" + costoSimulado + "\n");
                 }
-                
-                if (!tieneIngredientes) {
-                    txtAreaIngredientes.append("No hay ingredientes vinculados a esta receta.\n");
-                }
-                
-            } else { 
-                JOptionPane.showMessageDialog(null, "Receta no encontrada."); 
-                txtAreaIngredientes.setText("");
-            }
-        } catch (Exception ex) { JOptionPane.showMessageDialog(null, "Error al consultar: " + ex.toString()); }
+            } else { JOptionPane.showMessageDialog(null, "No encontrado"); }
+        } catch (Exception ex) { JOptionPane.showMessageDialog(null, ex.toString()); }
     }
 }
