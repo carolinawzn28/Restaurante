@@ -1,15 +1,17 @@
 package jdbc_ejemplo1;
 
-public class RecetaPollo extends ABC_Recetas {
-    public String lote;
+public class RecetaPostre extends ABC_Recetas {
+    public String tempRefrigeracion;
+    public String tempHorneado;
 
-    public RecetaPollo(String id, String nombre, String lote) {
+    public RecetaPostre(String id, String nombre, String tempRef, String tempHor) {
         this.txtID.setText(id);
         this.txtNombre.setText(nombre);
-        this.lote = lote;
+        this.tempRefrigeracion = tempRef;
+        this.tempHorneado = tempHor;
     }
 
     public void verReceta() {
-        super.verDetalleReceta("Tipo: Pollo\nLote: " + this.lote);
+        super.verDetalleReceta("Tipo: Postre\nTemp. Refrigeración: " + this.tempRefrigeracion + "\nTemp. Horneado: " + this.tempHorneado);
     }
 }
