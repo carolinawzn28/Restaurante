@@ -5,46 +5,64 @@ import java.awt.event.*;
 
 public class MenuPrincipal extends JFrame implements ActionListener {
     public JMenuBar mBar;
-    public JMenu mABC;
-    public JMenuItem iEmp, iRec, iRes, iIng, iProv;
-    public int rol;
-    public JMenu menuDetalles;
-    public JMenuItem DetalleSalario;
+    public JMenu mABC, mDetalles;
+    public JMenuItem iEmp, iRec, iRes, iIng, iProv, iDetalleSalario;
+    public String puestoUsuario; 
 
-    public MenuPrincipal(int rol) {
-        super("Menú");
-        this.rol = rol;
-        mBar = new JMenuBar(); mABC = new JMenu("ABC");
-        iEmp = new JMenuItem("Empleados"); iRec = new JMenuItem("Recetas");
-        iRes = new JMenuItem("Reservaciones"); iIng = new JMenuItem("Ingredientes");
+  
+    public MenuPrincipal(String puesto) {
+        super("Sistema de Operaciones - Restaurante");
+        this.puestoUsuario = puesto;
+
+        mBar = new JMenuBar();
+        mABC = new JMenu("ABC");
+        mDetalles = new JMenu("Detalles");
+
+        iEmp = new JMenuItem("Empleados");
+        iRec = new JMenuItem("Recetas");
+        iRes = new JMenuItem("Reservaciones");
+        iIng = new JMenuItem("Ingredientes");
         iProv = new JMenuItem("Proveedores");
-        menuDetalles = new JMenu("Detalles");
-        DetalleSalario = new JMenuItem("Calcular Salario");
-      
-        
+        iDetalleSalario = new JMenuItem("Detalle de Salario Neto");
 
         iEmp.addActionListener(this); iRec.addActionListener(this);
         iRes.addActionListener(this); iIng.addActionListener(this);
-        iProv.addActionListener(this);
-        DetalleSalario.addActionListener(this);
+        iProv.addActionListener(this); iDetalleSalario.addActionListener(this);
 
         mABC.add(iEmp); mABC.add(iRec); mABC.add(iRes); mABC.add(iIng); mABC.add(iProv);
-        mBar.add(mABC); setJMenuBar(mBar);
-        menuDetalles.add(DetalleSalario);
-        mBar.add(menuDetalles);
+        mDetalles.add(iDetalleSalario);
         
-        this.setSize(400, 300);
+        mBar.add(mABC); mBar.add(mDetalles);
+        setJMenuBar(mBar);
+        this.setSize(450, 350);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setLocationRelativeTo(null);
 
-        if (rol != 1) { iEmp.setEnabled(false); }
-        if (rol == 2) { iRes.setEnabled(false);
-        				iProv.setEnabled(false);}
-        if (rol == 3) { iIng.setEnabled(false);
-						iProv.setEnabled(false);
-						iRec.setEnabled(false);}
-        if (rol == 4) { iIng.setEnabled(false);
-						iProv.setEnabled(false);
-						iRec.setEnabled(false);
-						iRes.setEnabled(false);}
+        
+        if (puestoUsuario.equalsIgnoreCase("Chef")) {
+            
+            iEmp.setEnabled(false);
+            iRes.setEnabled(false);
+            iProv.setEnabled(false);
+            
+        } else if (puestoUsuario.equalsIgnoreCase("Mesero")) {
+           
+            mABC.setEnabled(false); 
+           
+            
+        } else if (puestoUsuario.equalsIgnoreCase("Host")) {
+      
+            iEmp.setEnabled(false);
+            iRec.setEnabled(false);
+            iIng.setEnabled(false);
+            iProv.setEnabled(false);
+           
+            
+        } else if (puestoUsuario.equalsIgnoreCase("Admin")) {
+         
+            iEmp.setEnabled(true); iRec.setEnabled(true); iRes.setEnabled(true);
+            iIng.setEnabled(true); iProv.setEnabled(true); iDetalleSalario.setEnabled(true);
+        }
     }
 
     @Override
@@ -54,6 +72,6 @@ public class MenuPrincipal extends JFrame implements ActionListener {
         if (e.getSource() == iRes) { new ABC_Reservaciones().setVisible(true); }
         if (e.getSource() == iIng) { new ABC_Ingredientes().setVisible(true); }
         if (e.getSource() == iProv) { new ABC_Proveedores().setVisible(true); }
-        if(e.getSource() == DetalleSalario) { new CalculoSalario().setVisible(true);} 
+        if (e.getSource() == iDetalleSalario) { new CalculoSalario().setVisible(true); }
     }
 }
