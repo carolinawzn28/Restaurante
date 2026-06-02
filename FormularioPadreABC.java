@@ -7,7 +7,7 @@ import java.sql.*;
 
 public abstract class FormularioPadreABC extends JFrame implements ActionListener {
     public Connection con; 
-    public JButton btnAgregar, btnModificar, btnBorrar, btnConsultar, btnBotones;
+    public JButton btnAgregar, btnModificar, btnBorrar, btnConsultar;
     public JPanel panelSuperior, panelBotones;
 
     public FormularioPadreABC(String titulo) {
@@ -15,7 +15,6 @@ public abstract class FormularioPadreABC extends JFrame implements ActionListene
         panelSuperior = new JPanel();
         panelBotones = new JPanel();
 
-     
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=Restaurante;user=sa;password=jffp1234;encrypt=true;trustServerCertificate=true;";
@@ -35,20 +34,17 @@ public abstract class FormularioPadreABC extends JFrame implements ActionListene
         btnModificar = new JButton("Modificar");
         btnBorrar = new JButton("Borrar");
         btnConsultar = new JButton("Consultar");
-        btnBotones = new JButton();
 
         btnAgregar.addActionListener(this);
         btnModificar.addActionListener(this);
         btnBorrar.addActionListener(this);
         btnConsultar.addActionListener(this);
-        btnBotones.addActionListener(this);
 
         panelBotones.add(btnAgregar);
         panelBotones.add(btnModificar);
-        panelBotones.add(btnBorrar);
+        panelBotones.add(btnBorrar);     
         panelBotones.add(btnConsultar);
     }
-
 
     public abstract void agregar();
     public abstract void modificar();
