@@ -1,22 +1,15 @@
 package jdbc_ejemplo1;
 
-import javax.swing.JOptionPane;
-
 public class RecetaBebida extends ABC_Recetas {
- 
-    public String porcentajeAlcohol;
+    public String gradoAlcohol;
 
     public RecetaBebida(String id, String nombre, String alcohol) {
         this.txtID.setText(id);
         this.txtNombre.setText(nombre);
-        this.porcentajeAlcohol = alcohol;
+        this.gradoAlcohol = alcohol;
     }
 
-   
-    public void verRecetaBebida() {
-        String mensaje = "RECETA DE BEBIDA\n" +
-                         "Nombre: " + this.txtNombre.getText() + "\n" +
-                         "Grado de Alcohol: " + this.porcentajeAlcohol + "%";
-        JOptionPane.showMessageDialog(null, mensaje);
+    public void verReceta() {
+        super.verDetalleReceta("Tipo: Bebida\nGrado de Alcohol: " + this.gradoAlcohol);
     }
 }
