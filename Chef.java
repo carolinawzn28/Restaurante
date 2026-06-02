@@ -1,9 +1,11 @@
 package jdbc_ejemplo1;
 
-
 class Chef extends Empleado {
-    public Chef(int id, String nombre, int salario) {
-    	
-        super(id, nombre, salario, 2); 
+    public int idTipoReceta; 
+
+    public Chef(int id, String nombre, String tel, double salario, int idTipoReceta) {
+        super(id, nombre, tel, salario);
+        this.idTipoReceta = idTipoReceta;
     }
+  
 }
