@@ -1,10 +1,6 @@
 package jdbc_ejemplo1;
 
-import javax.swing.JOptionPane;
-
-
 public class RecetaPollo extends ABC_Recetas {
-  
     public String lote;
 
     public RecetaPollo(String id, String nombre, String lote) {
@@ -13,11 +9,7 @@ public class RecetaPollo extends ABC_Recetas {
         this.lote = lote;
     }
 
-
-    public void verRecetaPollo() {
-        String mensaje = "RECETA DE POLLO\n" +
-                         "Nombre: " + this.txtNombre.getText() + "\n" +
-                         "Lote: " + this.lote;
-        JOptionPane.showMessageDialog(null, mensaje);
+    public void verReceta() {
+        super.verDetalleReceta("Tipo: Pollo\nLote: " + this.lote);
     }
 }
