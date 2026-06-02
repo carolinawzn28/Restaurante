@@ -3,9 +3,8 @@ package jdbc_ejemplo1;
 class Host extends Empleado {
     public int clientesMes;
 
-    public Host(int id, String nombre, int salario, int clientesMes) {
-      
-        super(id, nombre, salario, 3); 
+    public Host(int id, String nombre, String tel, double salario, int clientesMes) {
+        super(id, nombre, tel, salario);
         this.clientesMes = clientesMes;
     }
 
