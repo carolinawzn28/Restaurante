@@ -9,125 +9,94 @@ public class CalculoSalario extends JFrame implements ActionListener {
     public Connection con;
     public JTextField txtID, txtVariable; 
     public JButton btnConsultar, btnCalcular;
-    public JLabel lblNombre, lblRol, lblResultado, lblInstruccion;
+    public JLabel lblNombre, lblResultado, lblInstruccion;
     
-
-    public int idBuscado, salarioBase, idRol;
-    public String nombreBuscado;
+    public int idBuscado;
+    public double salarioBase;
+    public String nombreBuscado, telBuscado;
 
     public CalculoSalario() {
-        super("Detalle de Salarios por empleado");
-        setLayout(new GridLayout(6, 2, 5, 5));
-
+        super("Detalle de Salario Neto");
+        setLayout(new GridLayout(5, 2, 5, 5));
 
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String connectionUrl = "jdbc:sqlserver://localhost:1433;databaseName=Restaurante;user=sa;password=jffp1234;encrypt=true;trustServerCertificate=true;";
-            con = DriverManager.getConnection(connectionUrl);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Error: " + e.toString());
-        }
+            con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=Restaurante;user=sa;password=jffp1234;encrypt=true;trustServerCertificate=true;");
+        } catch (Exception e) {}
 
         txtID = new JTextField();
-        btnConsultar = new JButton("Buscar por ID");
+        btnConsultar = new JButton("Buscar Empleado");
         btnConsultar.addActionListener(this);
 
         lblNombre = new JLabel("-");
-        lblRol = new JLabel("-");
-        lblInstruccion = new JLabel("Dato extra requerido:");
+        lblInstruccion = new JLabel("Variable Extra:");
         txtVariable = new JTextField("0");
-        txtVariable.setEnabled(false); 
+        txtVariable.setEnabled(false);
         
         btnCalcular = new JButton("Calcular Sueldo Neto");
         btnCalcular.addActionListener(this);
         lblResultado = new JLabel("$0.00");
 
         add(new JLabel(" ID Empleado:")); add(txtID);
-        add(new JLabel(" Operación:")); add(btnConsultar);
-        add(new JLabel(" Nombre Empleado:")); add(lblNombre);
-        add(new JLabel(" Puesto en Sistema:")); add(lblRol);
+        add(new JLabel("")); add(btnConsultar);
+        add(new JLabel(" Nombre:")); add(lblNombre);
         add(lblInstruccion); add(txtVariable);
         add(btnCalcular); add(lblResultado);
 
-        this.setSize(420, 320);
-        this.setLocationRelativeTo(null); 
+        this.setSize(400, 250);
+        this.setLocationRelativeTo(null);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-       
         if (e.getSource() == btnConsultar) {
             try {
-                String sql = "SELECT * FROM Empleado WHERE IDEmpleado = " + txtID.getText();
+                String sql = "SELECT * FROM Empleados WHERE IDEmpleado = " + txtID.getText();
                 ResultSet rs = con.createStatement().executeQuery(sql);
-                
                 if (rs.next()) {
                     idBuscado = rs.getInt("IDEmpleado");
                     nombreBuscado = rs.getString("Nombre");
-                    salarioBase = rs.getInt("Salario");
-                    idRol = rs.getInt("IDRol");
+                    telBuscado = rs.getString("Telefono");
+                    salarioBase = rs.getDouble("Salario");
 
                     lblNombre.setText(nombreBuscado);
-                    txtVariable.setEnabled(false);
-                    txtVariable.setText("0");
-
-           
-                    if (idRol == 1) {
-                        lblRol.setText("Administrador");
-                        lblInstruccion.setText("No requiere datos extras:");
-                    }
-                    if (idRol == 2) {
-                        lblRol.setText("Chef");
-                        lblInstruccion.setText("No requiere datos extras:");
-                    }
-                    if (idRol == 3) {
-                        lblRol.setText("Host");
-                        lblInstruccion.setText("Clientes registrados en el Mes:");
-                        txtVariable.setEnabled(true); 
-                    }
-                    if (idRol == 4) {
-                        lblRol.setText("Mesero");
-                        lblInstruccion.setText("Total de propinas del día:");
-                        txtVariable.setEnabled(true); 
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(null, "El ID de Empleado no existe.");
-                }
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(null, "Error: " + ex.toString());
-            }
+                    txtVariable.setEnabled(true);
+                    lblInstruccion.setText("Propinas/Clientes:");
+                } else { JOptionPane.showMessageDialog(null, "No existe ese ID"); }
+            } catch (Exception ex) { JOptionPane.showMessageDialog(null, ex.toString()); }
         }
 
-  
-        if (e.getSource() == btnCalcular) {
-            if (nombreBuscado == null) {
-                JOptionPane.showMessageDialog(null, "Por favor busca un ID primero.");
-                return;
-            }
+    
+        if (e.getSource() == btnConsultar) {
+            try {
+                String id = txtID.getText();
+                String sql = "SELECT * FROM Empleados WHERE IDEmpleado = " + id;
+                ResultSet rs = con.createStatement().executeQuery(sql);
+                if (rs.next()) {
+                    idBuscado = rs.getInt("IDEmpleado");
+                    nombreBuscado = rs.getString("Nombre");
+                    salarioBase = rs.getDouble("Salario");
 
-          
-            if (idRol == 4) {
-               
-                double propinas = Double.parseDouble(txtVariable.getText());
-                Mesero me = new Mesero(idBuscado, nombreBuscado, salarioBase, propinas, 3);
-                lblResultado.setText("$" + me.calcularSueldo()); 
-                
-            } else if (idRol == 3) {
-              
-                int clientes = Integer.parseInt(txtVariable.getText());
-                Host ho = new Host(idBuscado, nombreBuscado, salarioBase, clientes);
-                lblResultado.setText("$" + ho.calcularSueldo()); 
-                
-            } else if (idRol == 2) {
-               
-                Chef ch = new Chef(idBuscado, nombreBuscado, salarioBase);
-                lblResultado.setText("$" + ch.calcularSueldo()); 
-                
-            } else if (idRol == 1) {
-               
-                Admin ad = new Admin(idBuscado, nombreBuscado, salarioBase);
-                lblResultado.setText("$" + ad.calcularSueldo()); 
-            }
+                    lblNombre.setText(nombreBuscado);
+                    txtVariable.setEnabled(true);
+                    
+                    Statement stmt = con.createStatement();
+                   
+                    if (stmt.executeQuery("SELECT * FROM Admin WHERE IDAdmin = " + id).next()) {
+                        lblInstruccion.setText("Administrador (Base):");
+                        txtVariable.setText("0");
+                        txtVariable.setEnabled(false);
+                    } else if (stmt.executeQuery("SELECT * FROM Chef WHERE IDChef = " + id).next()) {
+                        lblInstruccion.setText("Chef (Base):");
+                        txtVariable.setText("0");
+                        txtVariable.setEnabled(false);
+                    } else if (stmt.executeQuery("SELECT * FROM Host WHERE IDHost = " + id).next()) {
+                        lblInstruccion.setText("Clientes del Mes:");
+                    } else if (stmt.executeQuery("SELECT * FROM Mesero WHERE IDMesero = " + id).next()) {
+                        lblInstruccion.setText("Total Propinas Día:");
+                    }
+                }
+            } catch (Exception ex) {}
         }
     }
 }
